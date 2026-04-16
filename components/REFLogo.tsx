@@ -57,7 +57,7 @@ export default function REFLogo({ variant = 'hero', color = 'white' }: REFLogoPr
         >
           <text
             x="0"
-            y="15"
+            y="16"
             style={{
               fontFamily: 'Syne, sans-serif',
               fontWeight: 800,
@@ -71,7 +71,7 @@ export default function REFLogo({ variant = 'hero', color = 'white' }: REFLogoPr
 
           <text
             x="3"
-            y="31"
+            y="32"
             style={{
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
