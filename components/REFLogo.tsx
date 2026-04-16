@@ -51,7 +51,7 @@ export default function REFLogo({ variant = 'hero', color = 'white' }: REFLogoPr
     return (
       <div className="inline-block -rotate-12">
         <svg
-          viewBox="0 0 150 55"
+          viewBox="0 0 200 55"
           xmlns="http://www.w3.org/2000/svg"
           className="h-9 w-auto"
         >
