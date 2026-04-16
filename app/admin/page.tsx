@@ -5,8 +5,6 @@ import { Episode } from '@/components/EpisodeCard'
 
 type View = 'login' | 'dashboard'
 
-/** Injected at build time by Next.js — '1' when running on Vercel */
-const IS_VERCEL = process.env.NEXT_PUBLIC_IS_VERCEL === '1'
 
 function formatDate(dateStr: string): string {
   try {
@@ -114,53 +112,28 @@ export default function AdminPage() {
       let audioUrl = ''
 
       if (file && file.size > 0) {
-        if (IS_VERCEL) {
-          // ── Vercel production: client-side upload directly to Blob ──
-          setUploadProgress('Envoi du fichier audio…')
-          const { upload } = await import('@vercel/blob/client')
-          const blob = await upload(`audio/${file.name}`, file, {
-            access: 'public',
-            handleUploadUrl: '/api/upload-audio',
-          })
-          audioUrl = blob.url
-          setUploadProgress('Enregistrement des métadonnées…')
-        }
-        // Local dev: file goes as FormData below
+        setUploadProgress('Envoi du fichier audio…')
+        const { upload } = await import('@vercel/blob/client')
+        const blob = await upload(`audio/${file.name}`, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload-audio',
+        })
+        audioUrl = blob.url
+        setUploadProgress('Enregistrement des métadonnées…')
       }
 
-      if (IS_VERCEL) {
-        // Production: send JSON with the blob URL
-        const res = await fetch('/api/episodes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...form, audioUrl }),
-        })
-        if (res.ok) {
-          setFormSuccess('Émission ajoutée avec succès !')
-          resetForm()
-          loadEpisodes()
-        } else {
-          const data = await res.json()
-          setFormError(data.error || "Erreur lors de l'ajout")
-        }
+      const res = await fetch('/api/episodes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, audioUrl }),
+      })
+      if (res.ok) {
+        setFormSuccess('Émission ajoutée avec succès !')
+        resetForm()
+        loadEpisodes()
       } else {
-        // Local dev: multipart FormData
-        const fd = new FormData()
-        fd.append('title', form.title)
-        fd.append('description', form.description)
-        fd.append('date', form.date)
-        fd.append('duration', form.duration)
-        if (file) fd.append('file', file)
-
-        const res = await fetch('/api/episodes', { method: 'POST', body: fd })
-        if (res.ok) {
-          setFormSuccess('Émission ajoutée avec succès !')
-          resetForm()
-          loadEpisodes()
-        } else {
-          const data = await res.json()
-          setFormError(data.error || "Erreur lors de l'ajout")
-        }
+        const data = await res.json()
+        setFormError(data.error || "Erreur lors de l'ajout")
       }
     } catch (err) {
       setFormError('Erreur serveur')
@@ -359,11 +332,9 @@ export default function AdminPage() {
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Fichier audio
-                {IS_VERCEL && (
-                  <span className="ml-2 text-xs text-[#E91E8C] bg-[#FCE4EC] px-2 py-0.5 rounded-full">
-                    Upload direct Vercel Blob — pas de limite de taille
-                  </span>
-                )}
+                <span className="ml-2 text-xs text-[#E91E8C] bg-[#FCE4EC] px-2 py-0.5 rounded-full">
+                  Upload direct Vercel Blob — pas de limite de taille
+                </span>
               </label>
               <div
                 className="relative border-2 border-dashed border-gray-200 hover:border-[#E91E8C]/50 rounded-xl px-6 py-8 text-center cursor-pointer transition-colors"
