@@ -20,27 +20,21 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    let title: string, description: string, date: string, duration: string, audioUrl: string
+    const formData = await request.formData()
+    const title = formData.get('title') as string
+    const description = formData.get('description') as string
+    const date = formData.get('date') as string
+    const duration = formData.get('duration') as string
+    
+    let audioUrl = ''
 
     if (IS_VERCEL) {
-      // Production: audio was already uploaded to Vercel Blob by the client.
-      // Receive metadata + blob URL as JSON.
-      const body = await request.json()
-      title = body.title
-      description = body.description
-      date = body.date
-      duration = body.duration
-      audioUrl = body.audioUrl ?? ''
+      // En production, on récupère l'URL que le client a déjà envoyé au Blob
+      // Ou si tu envoies le fichier, il faut le traiter ici avec 'put' de @vercel/blob
+      audioUrl = formData.get('audioUrl') as string ?? ''
     } else {
-      // Local dev: receive everything as FormData including the audio file.
-      const formData = await request.formData()
-      title = formData.get('title') as string
-      description = formData.get('description') as string
-      date = formData.get('date') as string
-      duration = formData.get('duration') as string
+      // Local dev
       const file = formData.get('file') as File | null
-
-      audioUrl = ''
       if (file && file.size > 0) {
         audioUrl = await saveAudioLocally(file)
       }
