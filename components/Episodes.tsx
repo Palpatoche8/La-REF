@@ -1,16 +1,9 @@
-import { readFile } from 'fs/promises'
-import path from 'path'
+import { readEpisodes } from '@/lib/storage'
 import EpisodeCard, { Episode } from './EpisodeCard'
 
 async function getEpisodes(): Promise<Episode[]> {
-  try {
-    const filePath = path.join(process.cwd(), 'data', 'episodes.json')
-    const raw = await readFile(filePath, 'utf-8')
-    const episodes: Episode[] = JSON.parse(raw)
-    return episodes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  } catch {
-    return []
-  }
+  const episodes = await readEpisodes()
+  return episodes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export default async function Episodes() {
