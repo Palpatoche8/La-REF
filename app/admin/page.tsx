@@ -183,7 +183,7 @@ export default function AdminPage() {
                 <span className="text-white font-black text-2xl" style={{ fontFamily: 'Syne, sans-serif' }}>R</span>
               </div>
               <h1 className="text-2xl font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>
-                La REF — Admin
+                LA REF — Admin
               </h1>
               <p className="text-gray-400 text-sm mt-1">Espace d'administration</p>
             </div>
@@ -243,7 +243,7 @@ export default function AdminPage() {
             <span className="text-white font-black text-xs" style={{ fontFamily: 'Syne, sans-serif' }}>R</span>
           </div>
           <span className="font-black text-[#1A1A1A] text-lg" style={{ fontFamily: 'Syne, sans-serif' }}>
-            La REF Admin
+            LA REF Admin
           </span>
         </div>
         <div className="flex items-center gap-4">
