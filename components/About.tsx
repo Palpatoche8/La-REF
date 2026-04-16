@@ -1,9 +1,9 @@
 export default function About() {
   const stats = [
-    { value: '10+', label: 'Émissions par semaine' },
     { value: '50+', label: 'Membres actifs' },
     { value: '24/7', label: 'En ligne' },
     { value: '100%', label: 'Fait par des étudiants' },
+    { value: '4000+', label: 'Auditeurs et Auditrices par semaine' },
   ]
 
   const values = [
