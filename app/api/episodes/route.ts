@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { readEpisodes, writeEpisodes, saveAudioLocally } from '@/lib/storage'
 
-const IS_VERCEL = process.env.VERCEL === '1'
 
 function isAuthenticated(request: NextRequest): boolean {
   const authCookie = request.cookies.get('admin_auth')
@@ -20,20 +19,26 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const formData = await request.formData()
-    const title = formData.get('title') as string
-    const description = formData.get('description') as string
-    const date = formData.get('date') as string
-    const duration = formData.get('duration') as string
-    
-    let audioUrl = ''
+    let title: string, description: string, date: string, duration: string, audioUrl = ''
 
-    if (IS_VERCEL) {
-      // En production, on récupère l'URL que le client a déjà envoyé au Blob
-      // Ou si tu envoies le fichier, il faut le traiter ici avec 'put' de @vercel/blob
-      audioUrl = formData.get('audioUrl') as string ?? ''
+    const contentType = request.headers.get('content-type') ?? ''
+
+    if (contentType.includes('application/json')) {
+      // Production: admin sends JSON with pre-uploaded blob URL
+      const body = await request.json()
+      title = body.title
+      description = body.description
+      date = body.date
+      duration = body.duration
+      audioUrl = body.audioUrl ?? ''
     } else {
-      // Local dev
+      // Local dev: admin sends multipart FormData with the audio file
+      const formData = await request.formData()
+      title = formData.get('title') as string
+      description = formData.get('description') as string
+      date = formData.get('date') as string
+      duration = formData.get('duration') as string
+
       const file = formData.get('file') as File | null
       if (file && file.size > 0) {
         audioUrl = await saveAudioLocally(file)
