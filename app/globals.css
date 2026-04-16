@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pink-primary: #E91E8C;
+  --pink-light: #FCE4EC;
+  --pink-dark: #C2185B;
+  --charcoal: #1A1A1A;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--charcoal);
+  background: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--pink-primary);
+  border-radius: 3px;
+}
+
+/* Audio player custom styles */
+audio::-webkit-media-controls-panel {
+  background-color: var(--pink-light);
+}
+audio::-webkit-media-controls-play-button {
+  background-color: var(--pink-primary);
+  border-radius: 50%;
+}
+
+@layer utilities {
+  .bg-size-300 {
+    background-size: 300% 300%;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Wave animation bars */
+.wave-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--pink-primary);
+  transform-origin: bottom;
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(1) { animation-delay: 0s; height: 12px; }
+.wave-bar:nth-child(2) { animation-delay: 0.1s; height: 20px; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; height: 28px; }
+.wave-bar:nth-child(4) { animation-delay: 0.3s; height: 20px; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; height: 16px; }
+.wave-bar:nth-child(6) { animation-delay: 0.15s; height: 24px; }
+.wave-bar:nth-child(7) { animation-delay: 0.25s; height: 18px; }
+
+.wave-bar-white {
+  width: 4px;
+  border-radius: 2px;
+  background: white;
+  transform-origin: bottom;
+  animation: wave 1.2s ease-in-out infinite;
+}
+.wave-bar-white:nth-child(1) { animation-delay: 0s; height: 8px; }
+.wave-bar-white:nth-child(2) { animation-delay: 0.1s; height: 14px; }
+.wave-bar-white:nth-child(3) { animation-delay: 0.2s; height: 20px; }
+.wave-bar-white:nth-child(4) { animation-delay: 0.3s; height: 14px; }
+.wave-bar-white:nth-child(5) { animation-delay: 0.4s; height: 10px; }
+.wave-bar-white:nth-child(6) { animation-delay: 0.15s; height: 18px; }
+.wave-bar-white:nth-child(7) { animation-delay: 0.25s; height: 12px; }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-animated {
+  background: linear-gradient(-45deg, #E91E8C, #FF6B9D, #C2185B, #880E4F, #E91E8C, #FF4081);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* ON AIR pulse */
+@keyframes onAirPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(233, 30, 140, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(233, 30, 140, 0); }
+}
+.on-air-badge {
+  animation: onAirPulse 2s ease-out infinite;
+}
+
+/* Card hover */
+.episode-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.episode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(233, 30, 140, 0.15);
+}
