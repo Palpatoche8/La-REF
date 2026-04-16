@@ -113,9 +113,14 @@ export default function AdminPage() {
 
       if (file && file.size > 0) {
         setUploadProgress('Envoi du fichier audio…')
-        const fd = new FormData()
-        fd.append('file', file)
-        const uploadRes = await fetch('/api/upload-audio', { method: 'POST', body: fd })
+        const uploadRes = await fetch('/api/upload-audio', {
+          method: 'POST',
+          body: file,
+          headers: {
+            'x-filename': encodeURIComponent(file.name),
+            'x-content-type': file.type || 'audio/mpeg',
+          },
+        })
         if (!uploadRes.ok) {
           const data = await uploadRes.json().catch(() => ({}))
           throw new Error(data.error || "Échec de l'upload audio")
