@@ -113,12 +113,15 @@ export default function AdminPage() {
 
       if (file && file.size > 0) {
         setUploadProgress('Envoi du fichier audio…')
-        const { upload } = await import('@vercel/blob/client')
-        const blob = await upload(`audio/${file.name}`, file, {
-          access: 'public',
-          handleUploadUrl: '/api/upload-audio',
-        })
-        audioUrl = blob.url
+        const fd = new FormData()
+        fd.append('file', file)
+        const uploadRes = await fetch('/api/upload-audio', { method: 'POST', body: fd })
+        if (!uploadRes.ok) {
+          const data = await uploadRes.json().catch(() => ({}))
+          throw new Error(data.error || "Échec de l'upload audio")
+        }
+        const { url } = await uploadRes.json()
+        audioUrl = url
         setUploadProgress('Enregistrement des métadonnées…')
       }
 
@@ -136,7 +139,7 @@ export default function AdminPage() {
         setFormError(data.error || "Erreur lors de l'ajout")
       }
     } catch (err) {
-      setFormError('Erreur serveur')
+      setFormError(err instanceof Error ? err.message : 'Erreur serveur')
       console.error(err)
     } finally {
       setSubmitting(false)

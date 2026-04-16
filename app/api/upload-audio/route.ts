@@ -1,16 +1,4 @@
-/**
- * POST /api/upload-audio
- *
- * Handles Vercel Blob client-side upload token exchange.
- * The browser POSTs a signed request to this route, gets a token,
- * then uploads the file *directly* to Vercel Blob (bypassing the
- * 4.5 MB serverless payload limit).
- *
- * Only used in production (VERCEL=1). In local dev, the file goes
- * through /api/episodes as a normal multipart FormData upload.
- */
-
-import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
+import { put } from '@vercel/blob'
 import { NextRequest, NextResponse } from 'next/server'
 
 function isAuthenticated(request: NextRequest): boolean {
@@ -23,26 +11,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   }
 
-  const body = (await request.json()) as HandleUploadBody
+  const formData = await request.formData()
+  const file = formData.get('file') as File | null
 
-  const jsonResponse = await handleUpload({
-    body,
-    request,
-    onBeforeGenerateToken: async () => ({
-      maximumSizeInBytes: 200 * 1024 * 1024, // 200 MB
-      allowedContentTypes: [
-        'audio/mpeg',
-        'audio/mp3',
-        'audio/wav',
-        'audio/ogg',
-        'audio/m4a',
-        'audio/aac',
-        'audio/flac',
-        'audio/x-wav',
-      ],
-      tokenPayload: '',
-    }),
-  })
+  if (!file || file.size === 0) {
+    return NextResponse.json({ error: 'Aucun fichier fourni' }, { status: 400 })
+  }
 
-  return NextResponse.json(jsonResponse)
+  const blob = await put(`audio/${file.name}`, file, { access: 'public' })
+
+  return NextResponse.json({ url: blob.url })
 }
