@@ -1,24 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFile, writeFile, mkdir } from 'fs/promises'
-import path from 'path'
 import { randomUUID } from 'crypto'
+import { readEpisodes, writeEpisodes, saveAudioLocally } from '@/lib/storage'
 
-const EPISODES_PATH = path.join(process.cwd(), 'data', 'episodes.json')
-const AUDIO_DIR = path.join(process.cwd(), 'public', 'audio')
-
-async function readEpisodes() {
-  try {
-    const raw = await readFile(EPISODES_PATH, 'utf-8')
-    return JSON.parse(raw)
-  } catch {
-    return []
-  }
-}
-
-async function writeEpisodes(episodes: unknown[]) {
-  await mkdir(path.dirname(EPISODES_PATH), { recursive: true })
-  await writeFile(EPISODES_PATH, JSON.stringify(episodes, null, 2), 'utf-8')
-}
+const IS_VERCEL = process.env.VERCEL === '1'
 
 function isAuthenticated(request: NextRequest): boolean {
   const authCookie = request.cookies.get('admin_auth')
@@ -36,26 +20,34 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const formData = await request.formData()
-    const title = formData.get('title') as string
-    const description = formData.get('description') as string
-    const date = formData.get('date') as string
-    const duration = formData.get('duration') as string
-    const file = formData.get('file') as File | null
+    let title: string, description: string, date: string, duration: string, audioUrl: string
+
+    if (IS_VERCEL) {
+      // Production: audio was already uploaded to Vercel Blob by the client.
+      // Receive metadata + blob URL as JSON.
+      const body = await request.json()
+      title = body.title
+      description = body.description
+      date = body.date
+      duration = body.duration
+      audioUrl = body.audioUrl ?? ''
+    } else {
+      // Local dev: receive everything as FormData including the audio file.
+      const formData = await request.formData()
+      title = formData.get('title') as string
+      description = formData.get('description') as string
+      date = formData.get('date') as string
+      duration = formData.get('duration') as string
+      const file = formData.get('file') as File | null
+
+      audioUrl = ''
+      if (file && file.size > 0) {
+        audioUrl = await saveAudioLocally(file)
+      }
+    }
 
     if (!title || !description || !date || !duration) {
       return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
-    }
-
-    let filename = ''
-
-    if (file && file.size > 0) {
-      await mkdir(AUDIO_DIR, { recursive: true })
-      const ext = file.name.split('.').pop() || 'mp3'
-      const safeName = `${randomUUID()}.${ext}`
-      const buffer = Buffer.from(await file.arrayBuffer())
-      await writeFile(path.join(AUDIO_DIR, safeName), buffer)
-      filename = safeName
     }
 
     const episode = {
@@ -64,7 +56,7 @@ export async function POST(request: NextRequest) {
       description: description.trim(),
       date,
       duration: duration.trim(),
-      filename,
+      audioUrl,
     }
 
     const episodes = await readEpisodes()

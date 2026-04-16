@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import REFLogo from './REFLogo'
 
 export default function Hero() {
   const streamUrl = process.env.NEXT_PUBLIC_STREAM_URL || '#'
@@ -26,14 +27,7 @@ export default function Hero() {
 
       {/* Nav */}
       <nav className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 md:px-12 py-6 z-10">
-        <div className="flex items-center gap-3">
-          <span
-            className="text-white font-black text-2xl tracking-tight"
-            style={{ fontFamily: 'Syne, sans-serif' }}
-          >
-            La REF
-          </span>
-        </div>
+        <REFLogo variant="nav" color="white" />
         <div className="flex items-center gap-6">
           <a href="#about" className="text-white/80 hover:text-white text-sm font-medium transition-colors">
             À propos
@@ -64,17 +58,9 @@ export default function Hero() {
           </span>
         </div>
 
-        {/* REF Logo text */}
-        <h1
-          className="text-white font-black leading-none mb-4"
-          style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 'clamp(5rem, 18vw, 14rem)',
-            textShadow: '0 0 80px rgba(255,255,255,0.2)',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          La REF
+        {/* REF Logo — replaces plain text title */}
+        <h1 className="mb-2" style={{ filter: 'drop-shadow(0 0 40px rgba(255,255,255,0.15))' }}>
+          <REFLogo variant="hero" color="white" />
         </h1>
 
         {/* Waveform decoration */}
@@ -89,13 +75,7 @@ export default function Hero() {
         </div>
 
         {/* Tagline */}
-        <p
-          className="text-white/90 text-lg md:text-2xl font-light mt-4 mb-2 max-w-xl"
-          style={{ fontFamily: 'Inter, sans-serif' }}
-        >
-          Radio Étudiante de France
-        </p>
-        <p className="text-white/70 text-sm md:text-base mb-10 max-w-lg">
+        <p className="text-white/70 text-sm md:text-base mb-10 max-w-lg mt-2">
           La voix des étudiants — musique, culture, débats, et bien plus encore.
         </p>
 

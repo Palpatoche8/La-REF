@@ -1,22 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readFile, writeFile, unlink } from 'fs/promises'
-import path from 'path'
-
-const EPISODES_PATH = path.join(process.cwd(), 'data', 'episodes.json')
-const AUDIO_DIR = path.join(process.cwd(), 'public', 'audio')
-
-async function readEpisodes() {
-  try {
-    const raw = await readFile(EPISODES_PATH, 'utf-8')
-    return JSON.parse(raw)
-  } catch {
-    return []
-  }
-}
-
-async function writeEpisodes(episodes: unknown[]) {
-  await writeFile(EPISODES_PATH, JSON.stringify(episodes, null, 2), 'utf-8')
-}
+import { readEpisodes, writeEpisodes, deleteAudio } from '@/lib/storage'
 
 function isAuthenticated(request: NextRequest): boolean {
   const authCookie = request.cookies.get('admin_auth')
@@ -32,24 +15,15 @@ export async function DELETE(
   }
 
   const { id } = params
-
   const episodes = await readEpisodes()
-  const index = episodes.findIndex((e: { id: string }) => e.id === id)
+  const index = episodes.findIndex((e) => e.id === id)
 
   if (index === -1) {
     return NextResponse.json({ error: 'Émission introuvable' }, { status: 404 })
   }
 
   const episode = episodes[index]
-
-  // Delete audio file if it exists
-  if (episode.filename) {
-    try {
-      await unlink(path.join(AUDIO_DIR, episode.filename))
-    } catch {
-      // File may not exist, ignore
-    }
-  }
+  await deleteAudio(episode.audioUrl)
 
   episodes.splice(index, 1)
   await writeEpisodes(episodes)

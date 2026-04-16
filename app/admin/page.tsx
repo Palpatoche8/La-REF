@@ -5,6 +5,9 @@ import { Episode } from '@/components/EpisodeCard'
 
 type View = 'login' | 'dashboard'
 
+/** Injected at build time by Next.js — '1' when running on Vercel */
+const IS_VERCEL = process.env.NEXT_PUBLIC_IS_VERCEL === '1'
+
 function formatDate(dateStr: string): string {
   try {
     return new Date(dateStr).toLocaleDateString('fr-FR', {
@@ -23,25 +26,20 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
 
-  // Episodes state
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loadingEpisodes, setLoadingEpisodes] = useState(false)
 
-  // Form state
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    date: '',
-    duration: '',
-  })
+  const [form, setForm] = useState({ title: '', description: '', date: '', duration: '' })
   const [file, setFile] = useState<File | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Deleting
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  // ── Auth ──────────────────────────────────────────────────────────────────
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,25 +86,17 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    // Check if already logged in
-    fetch('/api/episodes')
-      .then((res) => {
-        if (res.ok) {
-          // Not auto-logging in — user still needs to enter password
-        }
-      })
-      .catch(() => {})
+    // no-op: user must always enter password
   }, [])
 
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  // ── Form ──────────────────────────────────────────────────────────────────
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] || null
-    setFile(f)
+    setFile(e.target.files?.[0] || null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,32 +111,70 @@ export default function AdminPage() {
 
     setSubmitting(true)
     try {
-      const fd = new FormData()
-      fd.append('title', form.title)
-      fd.append('description', form.description)
-      fd.append('date', form.date)
-      fd.append('duration', form.duration)
-      if (file) fd.append('file', file)
+      let audioUrl = ''
 
-      const res = await fetch('/api/episodes', {
-        method: 'POST',
-        body: fd,
-      })
-      if (res.ok) {
-        setFormSuccess('Émission ajoutée avec succès !')
-        setForm({ title: '', description: '', date: '', duration: '' })
-        setFile(null)
-        if (fileInputRef.current) fileInputRef.current.value = ''
-        loadEpisodes()
-      } else {
-        const data = await res.json()
-        setFormError(data.error || 'Erreur lors de l\'ajout')
+      if (file && file.size > 0) {
+        if (IS_VERCEL) {
+          // ── Vercel production: client-side upload directly to Blob ──
+          setUploadProgress('Envoi du fichier audio…')
+          const { upload } = await import('@vercel/blob/client')
+          const blob = await upload(`audio/${file.name}`, file, {
+            access: 'public',
+            handleUploadUrl: '/api/upload-audio',
+          })
+          audioUrl = blob.url
+          setUploadProgress('Enregistrement des métadonnées…')
+        }
+        // Local dev: file goes as FormData below
       }
-    } catch {
+
+      if (IS_VERCEL) {
+        // Production: send JSON with the blob URL
+        const res = await fetch('/api/episodes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...form, audioUrl }),
+        })
+        if (res.ok) {
+          setFormSuccess('Émission ajoutée avec succès !')
+          resetForm()
+          loadEpisodes()
+        } else {
+          const data = await res.json()
+          setFormError(data.error || "Erreur lors de l'ajout")
+        }
+      } else {
+        // Local dev: multipart FormData
+        const fd = new FormData()
+        fd.append('title', form.title)
+        fd.append('description', form.description)
+        fd.append('date', form.date)
+        fd.append('duration', form.duration)
+        if (file) fd.append('file', file)
+
+        const res = await fetch('/api/episodes', { method: 'POST', body: fd })
+        if (res.ok) {
+          setFormSuccess('Émission ajoutée avec succès !')
+          resetForm()
+          loadEpisodes()
+        } else {
+          const data = await res.json()
+          setFormError(data.error || "Erreur lors de l'ajout")
+        }
+      }
+    } catch (err) {
       setFormError('Erreur serveur')
+      console.error(err)
     } finally {
       setSubmitting(false)
+      setUploadProgress('')
     }
+  }
+
+  const resetForm = () => {
+    setForm({ title: '', description: '', date: '', duration: '' })
+    setFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const handleDelete = async (id: string) => {
@@ -154,9 +182,7 @@ export default function AdminPage() {
     setDeletingId(id)
     try {
       const res = await fetch(`/api/episodes/${id}`, { method: 'DELETE' })
-      if (res.ok) {
-        setEpisodes((prev) => prev.filter((ep) => ep.id !== id))
-      }
+      if (res.ok) setEpisodes((prev) => prev.filter((ep) => ep.id !== id))
     } catch {
       // ignore
     } finally {
@@ -164,13 +190,13 @@ export default function AdminPage() {
     }
   }
 
-  // ── LOGIN VIEW ──
+  // ── Login view ────────────────────────────────────────────────────────────
+
   if (view === 'login') {
     return (
       <div className="min-h-screen gradient-animated flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10">
-            {/* Logo */}
             <div className="flex flex-col items-center mb-8">
               <div className="w-16 h-16 rounded-2xl gradient-animated flex items-center justify-center mb-4 shadow-lg">
                 <span className="text-white font-black text-2xl" style={{ fontFamily: 'Syne, sans-serif' }}>R</span>
@@ -209,7 +235,7 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full py-3 px-6 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02]"
+                className="w-full py-3 px-6 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold transition-all duration-200 disabled:opacity-60 shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02]"
               >
                 {loginLoading ? 'Connexion...' : 'Se connecter'}
               </button>
@@ -226,10 +252,10 @@ export default function AdminPage() {
     )
   }
 
-  // ── DASHBOARD VIEW ──
+  // ── Dashboard ─────────────────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
-      {/* Top bar */}
       <header className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg gradient-animated flex items-center justify-center">
@@ -280,7 +306,7 @@ export default function AdminPage() {
                 name="title"
                 value={form.title}
                 onChange={handleFormChange}
-                placeholder="Ex: L'Actu Étudiante #12"
+                placeholder="Ex : L'Actu Étudiante #12"
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
                 required
               />
@@ -294,7 +320,7 @@ export default function AdminPage() {
                 name="description"
                 value={form.description}
                 onChange={handleFormChange}
-                placeholder="Présentation de l'émission..."
+                placeholder="Présentation de l'émission…"
                 rows={3}
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all resize-none"
                 required
@@ -324,7 +350,7 @@ export default function AdminPage() {
                 name="duration"
                 value={form.duration}
                 onChange={handleFormChange}
-                placeholder="Ex: 45:00"
+                placeholder="Ex : 45:00"
                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
                 required
               />
@@ -332,7 +358,12 @@ export default function AdminPage() {
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Fichier MP3
+                Fichier audio
+                {IS_VERCEL && (
+                  <span className="ml-2 text-xs text-[#E91E8C] bg-[#FCE4EC] px-2 py-0.5 rounded-full">
+                    Upload direct Vercel Blob — pas de limite de taille
+                  </span>
+                )}
               </label>
               <div
                 className="relative border-2 border-dashed border-gray-200 hover:border-[#E91E8C]/50 rounded-xl px-6 py-8 text-center cursor-pointer transition-colors"
@@ -341,7 +372,7 @@ export default function AdminPage() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="audio/*,.mp3,.wav,.ogg,.m4a"
+                  accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac"
                   onChange={handleFileChange}
                   className="hidden"
                 />
@@ -359,11 +390,22 @@ export default function AdminPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
                     <p className="text-sm font-medium">Cliquez pour sélectionner un fichier audio</p>
-                    <p className="text-xs mt-1">MP3, WAV, OGG, M4A acceptés</p>
+                    <p className="text-xs mt-1">MP3, WAV, OGG, M4A, AAC, FLAC acceptés</p>
                   </div>
                 )}
               </div>
             </div>
+
+            {/* Upload progress */}
+            {uploadProgress && (
+              <div className="md:col-span-2 flex items-center gap-2 text-[#E91E8C] text-sm bg-[#FCE4EC] px-4 py-3 rounded-xl">
+                <svg className="w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                {uploadProgress}
+              </div>
+            )}
 
             {formError && (
               <div className="md:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 px-4 py-3 rounded-xl">
@@ -387,7 +429,7 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex items-center gap-2 bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold px-6 py-2.5 rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02] text-sm"
+                className="flex items-center gap-2 bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold px-6 py-2.5 rounded-xl transition-all duration-200 disabled:opacity-60 shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02] text-sm"
               >
                 {submitting ? (
                   <>
@@ -395,7 +437,7 @@ export default function AdminPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                     </svg>
-                    Enregistrement...
+                    {uploadProgress ? 'Upload en cours…' : 'Enregistrement…'}
                   </>
                 ) : (
                   <>
@@ -435,7 +477,7 @@ export default function AdminPage() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
-              Chargement...
+              Chargement…
             </div>
           ) : episodes.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -470,9 +512,9 @@ export default function AdminPage() {
                         <span className="text-xs text-[#E91E8C] bg-[#FCE4EC] px-2 py-0.5 rounded-full">
                           {ep.duration}
                         </span>
-                        {ep.filename && (
+                        {ep.audioUrl && (
                           <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                            Audio
+                            {ep.audioUrl.startsWith('http') ? 'Blob' : 'Audio local'}
                           </span>
                         )}
                       </div>

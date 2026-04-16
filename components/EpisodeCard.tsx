@@ -8,7 +8,10 @@ export interface Episode {
   description: string
   date: string
   duration: string
-  filename: string
+  /** Full Vercel Blob URL (production) or /audio/xxx.mp3 path (dev) */
+  audioUrl: string
+  /** @deprecated legacy field from initial seed — mapped to audioUrl by storage layer */
+  filename?: string
 }
 
 interface EpisodeCardProps {
@@ -28,7 +31,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function EpisodeCard({ episode }: EpisodeCardProps) {
-  const audioSrc = `/audio/${episode.filename}`
+  const audioSrc = episode.audioUrl || ''
 
   return (
     <div className="episode-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">

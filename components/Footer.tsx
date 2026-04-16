@@ -1,3 +1,5 @@
+import REFLogo from './REFLogo'
+
 export default function Footer() {
   const year = new Date().getFullYear()
 
@@ -52,14 +54,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-12 pb-12 border-b border-white/10">
           {/* Brand */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-animated flex items-center justify-center">
-                <span className="text-white font-black text-sm" style={{ fontFamily: 'Syne, sans-serif' }}>R</span>
-              </div>
-              <span className="text-2xl font-black" style={{ fontFamily: 'Syne, sans-serif' }}>
-                La REF
-              </span>
-            </div>
+            <REFLogo variant="nav" color="white" />
             <p className="text-white/50 text-sm leading-relaxed">
               Radio Étudiante de France — la voix des étudiant·e·s, 24h/24, 7j/7.
             </p>
