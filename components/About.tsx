@@ -1,6 +1,6 @@
 export default function About() {
   const stats = [
-    { value: '10+', label: 'Membres actifs' },
+    { value: 'En Live', label: 'Tous les mardis' },
     { value: '24/7', label: 'En ligne' },
     { value: '100%', label: 'Fait par des étudiants' },
     { value: '4000+', label: 'Auditeurs et Auditrices par mois' },
