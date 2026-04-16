@@ -1,106 +1,157 @@
 interface REFLogoProps {
-  /** Controls overall size. Hero = fills the hero block. */
   variant?: 'hero' | 'nav' | 'footer'
-  /** Color scheme */
   color?: 'white' | 'pink'
 }
 
-/**
- * Inline SVG recreation of the La REF logo.
- * Uses Syne (loaded via Google Fonts) for a faithful match.
- * White variant is for use on the gradient hero / dark backgrounds.
- */
 export default function REFLogo({ variant = 'hero', color = 'white' }: REFLogoProps) {
   const fill = color === 'white' ? '#ffffff' : '#E91E8C'
   const taglineFill = color === 'white' ? 'rgba(255,255,255,0.9)' : '#1A1A2E'
 
   if (variant === 'nav') {
     return (
-      <svg
-        viewBox="0 0 160 44"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-9 w-auto"
-        aria-label="La REF — Radio Étudiante de France"
-      >
-        {/* REF on one line for compact nav */}
-        <text
-          x="0" y="36"
-          style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '38px', letterSpacing: '-1px' }}
-          fill={fill}
+      <div className="inline-block -rotate-12">
+        <svg
+          viewBox="0 0 180 60"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-10 w-auto"
         >
-          REF
-        </text>
-      </svg>
+          <text
+            x="0"
+            y="42"
+            style={{
+              fontFamily: 'Syne, sans-serif',
+              fontWeight: 800,
+              fontSize: '44px',
+              letterSpacing: '0.18em', // ✨ plus espacé
+            }}
+            fill={fill}
+          >
+            REF
+          </text>
+
+          <text
+            x="4"
+            y="58"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 400,
+              fontSize: '11px',
+              letterSpacing: '0.12em',
+            }}
+            fill={taglineFill}
+          >
+            Radio Étudiante de France
+          </text>
+        </svg>
+      </div>
     )
   }
 
   if (variant === 'footer') {
     return (
-      <svg
-        viewBox="0 0 110 34"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-7 w-auto"
-        aria-label="La REF"
-      >
-        <text
-          x="0" y="28"
-          style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '30px', letterSpacing: '-1px' }}
-          fill={fill}
+      <div className="inline-block -rotate-12">
+        <svg
+          viewBox="0 0 150 55"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-9 w-auto"
         >
-          REF
-        </text>
-      </svg>
+          <text
+            x="0"
+            y="38"
+            style={{
+              fontFamily: 'Syne, sans-serif',
+              fontWeight: 800,
+              fontSize: '36px',
+              letterSpacing: '0.2em',
+            }}
+            fill={fill}
+          >
+            REF
+          </text>
+
+          <text
+            x="3"
+            y="52"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 400,
+              fontSize: '10px',
+              letterSpacing: '0.1em',
+            }}
+            fill={taglineFill}
+          >
+            Radio Étudiante de France
+          </text>
+        </svg>
+      </div>
     )
   }
 
-  /* ── Hero variant — staggered R / E / F staircase + tagline ── */
+  // HERO (déjà bon mais on ajuste légèrement)
   return (
+  <div className="inline-block -rotate-12">
     <svg
-      viewBox="0 0 520 310"
-      fill="none"
+      viewBox="0 0 1200 400" // 🔥 PLUS GRAND
       xmlns="http://www.w3.org/2000/svg"
       className="w-full max-w-[min(520px,80vw)] h-auto"
-      aria-label="La REF — Radio Étudiante de France"
     >
-      {/*
-        Each letter is the same size (~160px) but offset vertically
-        to create the rising staircase: R low, E mid, F high.
-        Based on the original La REF brand mark.
-      */}
-      {/* R — bottom of staircase */}
+      {/* R */}
       <text
-        x="0" y="240"
-        style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '195px', letterSpacing: '0px' }}
+        x="0"
+        y="260"
+        style={{
+          fontFamily: 'Syne, sans-serif',
+          fontWeight: 800,
+          fontSize: '360px',
+        }}
         fill={fill}
       >
         R
       </text>
-      {/* E — middle */}
+
+      {/* E */}
       <text
-        x="168" y="195"
-        style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '195px', letterSpacing: '0px' }}
+        x="410"
+        y="260"
+        style={{
+          fontFamily: 'Syne, sans-serif',
+          fontWeight: 800,
+          fontSize: '360px',
+        }}
         fill={fill}
       >
         E
       </text>
-      {/* F — top */}
+
+      {/* F */}
       <text
-        x="336" y="150"
-        style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '195px', letterSpacing: '0px' }}
+        x="800"
+        y="260"
+        style={{
+          fontFamily: 'Syne, sans-serif',
+          fontWeight: 800,
+          fontSize: '360px',
+        }}
         fill={fill}
       >
         F
       </text>
+
       {/* Tagline */}
       <text
-        x="162" y="290"
-        style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '22px', letterSpacing: '0.5px' }}
+        x="20"
+        y="380"
+        style={{
+          fontFamily: 'Inter, sans-serif',
+          fontWeight: 400,
+          fontSize: '90px',
+          letterSpacing: '2px',
+        }}
         fill={taglineFill}
       >
         Radio Étudiante de France
       </text>
     </svg>
-  )
+  </div>
+)
 }
