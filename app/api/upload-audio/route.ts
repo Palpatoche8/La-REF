@@ -42,9 +42,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ],
       tokenPayload: '',
     }),
-    onUploadCompleted: async () => {
-      // Nothing to do — the admin page sends the blob URL to /api/episodes
-    },
   })
 
   return NextResponse.json(jsonResponse)
