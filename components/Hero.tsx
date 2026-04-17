@@ -68,7 +68,7 @@ export default function Hero() {
             letterSpacing: '-0.02em',
           }}
         >
-          La REF
+          LA REF
         </h1>
 
         {/* Waveform decoration */}
