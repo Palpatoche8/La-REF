@@ -13,7 +13,219 @@ function formatDate(dateStr: string): string {
   }
 }
 
-const EMPTY_FORM = { title: '', description: '', date: '', duration: '', audioUrl: '' }
+const EMPTY_FORM = { title: '', description: '', date: '', duration: '', audioUrl: '', type: 'rediff' as 'rediff' | 'podcast' }
+
+// ── Reusable form fields ──────────────────────────────────────────────────────
+
+function EpisodeFormFields({
+  form,
+  onChange,
+}: {
+  form: typeof EMPTY_FORM
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+}) {
+  return (
+    <>
+      <div className="md:col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Titre <span className="text-[#E91E8C]">*</span>
+        </label>
+        <input type="text" name="title" value={form.title} onChange={onChange}
+          placeholder="Ex : L'Actu Étudiante #12"
+          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
+          required />
+      </div>
+
+      <div className="md:col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Description <span className="text-[#E91E8C]">*</span>
+        </label>
+        <textarea name="description" value={form.description} onChange={onChange}
+          placeholder="Présentation de l'émission…" rows={3}
+          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all resize-none"
+          required />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Date <span className="text-[#E91E8C]">*</span>
+        </label>
+        <input type="date" name="date" value={form.date} onChange={onChange}
+          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
+          required />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Durée <span className="text-[#E91E8C]">*</span>
+        </label>
+        <input type="text" name="duration" value={form.duration} onChange={onChange}
+          placeholder="Ex : 45:00"
+          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
+          required />
+      </div>
+
+      <div className="md:col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Type <span className="text-[#E91E8C]">*</span>
+        </label>
+        <div className="flex gap-3">
+          <label className={`flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${form.type === 'rediff' ? 'border-[#E91E8C] bg-[#FCE4EC]/40' : 'border-gray-200 hover:border-gray-300'}`}>
+            <input type="radio" name="type" value="rediff" checked={form.type === 'rediff'} onChange={onChange} className="accent-[#E91E8C]" />
+            <div>
+              <p className="text-sm font-semibold text-gray-800">Rediffusion</p>
+              <p className="text-xs text-gray-400">Émission complète du mardi</p>
+            </div>
+          </label>
+          <label className={`flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${form.type === 'podcast' ? 'border-[#E91E8C] bg-[#FCE4EC]/40' : 'border-gray-200 hover:border-gray-300'}`}>
+            <input type="radio" name="type" value="podcast" checked={form.type === 'podcast'} onChange={onChange} className="accent-[#E91E8C]" />
+            <div>
+              <p className="text-sm font-semibold text-gray-800">Podcast</p>
+              <p className="text-xs text-gray-400">Format court, best-of ou extrait</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div className="md:col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Lien audio Google Drive
+        </label>
+        <input type="url" name="audioUrl" value={form.audioUrl} onChange={onChange}
+          placeholder="https://drive.google.com/file/d/…/view"
+          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all font-mono"
+        />
+        <div className="mt-3 bg-[#FAFAFA] border border-gray-100 rounded-xl p-3.5">
+          <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Comment obtenir le lien Google Drive
+          </p>
+          <ol className="text-xs text-gray-400 space-y-1 list-decimal list-inside">
+            <li>Ouvrez Google Drive et cliquez droit sur le fichier audio</li>
+            <li>Sélectionnez <strong className="text-gray-500">Partager</strong> → <strong className="text-gray-500">Copier le lien</strong></li>
+            <li>Dans les paramètres de partage, choisissez <strong className="text-gray-500">Tous les internautes avec le lien</strong></li>
+            <li>Collez le lien ci-dessus</li>
+          </ol>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ── Edit modal ────────────────────────────────────────────────────────────────
+
+function EditModal({
+  episode,
+  onClose,
+  onSaved,
+}: {
+  episode: Episode
+  onClose: () => void
+  onSaved: (updated: Episode) => void
+}) {
+  const [form, setForm] = useState({
+    title: episode.title,
+    description: episode.description,
+    date: episode.date,
+    duration: episode.duration,
+    audioUrl: episode.audioUrl ?? '',
+    type: (episode.type ?? 'rediff') as 'rediff' | 'podcast',
+  })
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/episodes/${episode.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        const updated = await res.json()
+        onSaved(updated)
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Erreur lors de la modification')
+      }
+    } catch {
+      setError('Erreur serveur')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
+          <h3 className="text-lg font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Modifier l'émission
+          </h3>
+          <button onClick={onClose} className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 grid md:grid-cols-2 gap-5">
+          <EpisodeFormFields form={form} onChange={handleChange} />
+
+          {error && (
+            <div className="md:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 px-4 py-3 rounded-xl">
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          <div className="md:col-span-2 flex justify-end gap-3">
+            <button type="button" onClick={onClose}
+              className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 text-sm font-medium transition-colors">
+              Annuler
+            </button>
+            <button type="submit" disabled={saving}
+              className="flex items-center gap-2 bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold px-6 py-2.5 rounded-xl transition-all duration-200 disabled:opacity-60 shadow-md hover:shadow-[#E91E8C]/30 text-sm">
+              {saving ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Enregistrement…
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Enregistrer
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function AdminPage() {
   const [view, setView] = useState<View>('login')
@@ -29,6 +241,7 @@ export default function AdminPage() {
   const [formError, setFormError] = useState('')
   const [formSuccess, setFormSuccess] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [editingEpisode, setEditingEpisode] = useState<Episode | null>(null)
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
@@ -76,9 +289,9 @@ export default function AdminPage() {
     }
   }
 
-  // ── Form ──────────────────────────────────────────────────────────────────
+  // ── Add form ──────────────────────────────────────────────────────────────
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -114,6 +327,8 @@ export default function AdminPage() {
     }
   }
 
+  // ── Delete ────────────────────────────────────────────────────────────────
+
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer cette émission ?')) return
     setDeletingId(id)
@@ -138,9 +353,7 @@ export default function AdminPage() {
               <div className="w-16 h-16 rounded-2xl gradient-animated flex items-center justify-center mb-4 shadow-lg">
                 <span className="text-white font-black text-2xl" style={{ fontFamily: 'Syne, sans-serif' }}>R</span>
               </div>
-              <h1 className="text-2xl font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>
-                La REF — Admin
-              </h1>
+              <h1 className="text-2xl font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>La REF — Admin</h1>
               <p className="text-gray-400 text-sm mt-1">Espace d'administration</p>
             </div>
 
@@ -148,13 +361,9 @@ export default function AdminPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Mot de passe administrateur</label>
                 <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/40 focus:border-[#E91E8C] transition-all text-sm"
-                  placeholder="••••••••"
-                  required
-                  autoFocus
+                  placeholder="••••••••" required autoFocus
                 />
               </div>
 
@@ -167,11 +376,8 @@ export default function AdminPage() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={loginLoading}
-                className="w-full py-3 px-6 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold transition-all duration-200 disabled:opacity-60 shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02]"
-              >
+              <button type="submit" disabled={loginLoading}
+                className="w-full py-3 px-6 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white font-bold transition-all duration-200 disabled:opacity-60 shadow-md hover:shadow-[#E91E8C]/30 hover:scale-[1.02]">
                 {loginLoading ? 'Connexion...' : 'Se connecter'}
               </button>
             </form>
@@ -189,6 +395,18 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
+      {/* Edit modal */}
+      {editingEpisode && (
+        <EditModal
+          episode={editingEpisode}
+          onClose={() => setEditingEpisode(null)}
+          onSaved={(updated) => {
+            setEpisodes((prev) => prev.map((ep) => ep.id === updated.id ? updated : ep))
+            setEditingEpisode(null)
+          }}
+        />
+      )}
+
       <header className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg gradient-animated flex items-center justify-center">
@@ -198,10 +416,8 @@ export default function AdminPage() {
         </div>
         <div className="flex items-center gap-4">
           <a href="/" className="text-sm text-gray-400 hover:text-[#E91E8C] transition-colors">Voir le site</a>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-colors bg-gray-100 hover:bg-red-50 px-3 py-1.5 rounded-lg"
-          >
+          <button onClick={handleLogout}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-colors bg-gray-100 hover:bg-red-50 px-3 py-1.5 rounded-lg">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
@@ -224,69 +440,7 @@ export default function AdminPage() {
           </h2>
 
           <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-5">
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Titre <span className="text-[#E91E8C]">*</span>
-              </label>
-              <input type="text" name="title" value={form.title} onChange={handleFormChange}
-                placeholder="Ex : L'Actu Étudiante #12"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
-                required />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Description <span className="text-[#E91E8C]">*</span>
-              </label>
-              <textarea name="description" value={form.description} onChange={handleFormChange}
-                placeholder="Présentation de l'émission…" rows={3}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all resize-none"
-                required />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Date <span className="text-[#E91E8C]">*</span>
-              </label>
-              <input type="date" name="date" value={form.date} onChange={handleFormChange}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
-                required />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Durée <span className="text-[#E91E8C]">*</span>
-              </label>
-              <input type="text" name="duration" value={form.duration} onChange={handleFormChange}
-                placeholder="Ex : 45:00"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all"
-                required />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Lien audio Google Drive
-              </label>
-              <input type="url" name="audioUrl" value={form.audioUrl} onChange={handleFormChange}
-                placeholder="https://drive.google.com/file/d/…/view"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#E91E8C]/30 focus:border-[#E91E8C] text-sm transition-all font-mono"
-              />
-              <div className="mt-3 bg-[#FAFAFA] border border-gray-100 rounded-xl p-3.5">
-                <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Comment obtenir le lien Google Drive
-                </p>
-                <ol className="text-xs text-gray-400 space-y-1 list-decimal list-inside">
-                  <li>Ouvrez Google Drive et cliquez droit sur le fichier audio</li>
-                  <li>Sélectionnez <strong className="text-gray-500">Partager</strong> → <strong className="text-gray-500">Copier le lien</strong></li>
-                  <li>Dans les paramètres de partage, choisissez <strong className="text-gray-500">Tous les internautes avec le lien</strong></li>
-                  <li>Collez le lien ci-dessus</li>
-                </ol>
-              </div>
-            </div>
+            <EpisodeFormFields form={form} onChange={handleFormChange} />
 
             {formError && (
               <div className="md:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 px-4 py-3 rounded-xl">
@@ -369,7 +523,7 @@ export default function AdminPage() {
                 .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                 .map((ep) => (
                   <div key={ep.id}
-                    className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-[#E91E8C]/20 hover:bg-[#FCE4EC]/20 transition-all">
+                    className="flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-[#E91E8C]/20 hover:bg-[#FCE4EC]/10 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-[#FCE4EC] text-[#E91E8C] flex items-center justify-center shrink-0">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -378,9 +532,12 @@ export default function AdminPage() {
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-[#1A1A1A] text-sm truncate">{ep.title}</p>
                       <p className="text-gray-400 text-xs mt-0.5 line-clamp-1">{ep.description}</p>
-                      <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <span className="text-xs text-gray-400">{formatDate(ep.date)}</span>
                         <span className="text-xs text-[#E91E8C] bg-[#FCE4EC] px-2 py-0.5 rounded-full">{ep.duration}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${(ep.type ?? 'rediff') === 'rediff' ? 'text-blue-600 bg-blue-50' : 'text-purple-600 bg-purple-50'}`}>
+                          {(ep.type ?? 'rediff') === 'rediff' ? 'Rediffusion' : 'Podcast'}
+                        </span>
                         {ep.audioUrl ? (
                           <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Audio lié</span>
                         ) : (
@@ -388,20 +545,31 @@ export default function AdminPage() {
                         )}
                       </div>
                     </div>
-                    <button onClick={() => handleDelete(ep.id)} disabled={deletingId === ep.id}
-                      className="shrink-0 p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                      title="Supprimer">
-                      {deletingId === ep.id ? (
-                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                        </svg>
-                      ) : (
+                    <div className="flex items-center gap-1 shrink-0">
+                      {/* Edit */}
+                      <button onClick={() => setEditingEpisode(ep)}
+                        className="p-2 rounded-lg text-gray-400 hover:text-[#E91E8C] hover:bg-[#FCE4EC] transition-colors"
+                        title="Modifier">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                      )}
-                    </button>
+                      </button>
+                      {/* Delete */}
+                      <button onClick={() => handleDelete(ep.id)} disabled={deletingId === ep.id}
+                        className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                        title="Supprimer">
+                        {deletingId === ep.id ? (
+                          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))}
             </div>
