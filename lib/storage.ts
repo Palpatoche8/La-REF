@@ -20,6 +20,8 @@ export interface Episode {
   duration: string
   /** Local filename (dev) or full Vercel Blob URL (production) */
   audioUrl: string
+  /** 'rediff' = full episode replay, 'podcast' = short format / best-of */
+  type: 'rediff' | 'podcast'
 }
 
 const IS_VERCEL = process.env.VERCEL === '1'

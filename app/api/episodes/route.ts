@@ -19,25 +19,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    let title: string, description: string, date: string, duration: string, audioUrl = ''
+    let title: string, description: string, date: string, duration: string, audioUrl = '', type = 'rediff'
 
     const contentType = request.headers.get('content-type') ?? ''
 
     if (contentType.includes('application/json')) {
-      // Production: admin sends JSON with pre-uploaded blob URL
       const body = await request.json()
       title = body.title
       description = body.description
       date = body.date
       duration = body.duration
       audioUrl = body.audioUrl ?? ''
+      type = body.type === 'podcast' ? 'podcast' : 'rediff'
     } else {
-      // Local dev: admin sends multipart FormData with the audio file
       const formData = await request.formData()
       title = formData.get('title') as string
       description = formData.get('description') as string
       date = formData.get('date') as string
       duration = formData.get('duration') as string
+      type = formData.get('type') === 'podcast' ? 'podcast' : 'rediff'
 
       const file = formData.get('file') as File | null
       if (file && file.size > 0) {
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       date,
       duration: duration.trim(),
       audioUrl,
+      type: type as 'rediff' | 'podcast',
     }
 
     const episodes = await readEpisodes()

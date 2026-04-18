@@ -8,9 +8,9 @@ export interface Episode {
   description: string
   date: string
   duration: string
-  /** Full Vercel Blob URL (production) or /audio/xxx.mp3 path (dev) */
   audioUrl: string
-  /** @deprecated legacy field from initial seed — mapped to audioUrl by storage layer */
+  type: 'rediff' | 'podcast'
+  /** @deprecated legacy field from initial seed */
   filename?: string
 }
 
@@ -32,11 +32,11 @@ function formatDate(dateStr: string): string {
 
 export default function EpisodeCard({ episode }: EpisodeCardProps) {
   const audioSrc = episode.audioUrl || ''
+  const isRediff = (episode.type ?? 'rediff') === 'rediff'
 
   return (
     <div className="episode-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
-      {/* Color accent bar */}
-      <div className="h-1 bg-gradient-to-r from-[#E91E8C] to-[#FF6B9D]" />
+      <div className={`h-1 ${isRediff ? 'bg-gradient-to-r from-[#E91E8C] to-[#FF6B9D]' : 'bg-gradient-to-r from-[#9C27B0] to-[#E91E8C]'}`} />
 
       <div className="p-6 flex flex-col flex-1">
         {/* Header */}
