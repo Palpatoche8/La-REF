@@ -13,6 +13,7 @@
     "@vercel/kv": "^3.0.0",
     "cookies-next": "^4.2.1",
     "next": "14.2.5",
+    "next-auth": "^4.24.14",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^9.0.1"
