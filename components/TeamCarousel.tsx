@@ -12,7 +12,7 @@ const TEAM = [
   {
     name: 'Thomas',
     role: 'Chroniqueur & Maître des jeux',
-    bio: "Thomas, c'est la polyvalence incarnée : chroniqueur sur des sujets aussi variés qu'inattendus, grand comique devant l'éternel et cerveau derrière les jeux cultes de l'émission. Son plus célèbre ? Trouve La Ref — un moment de radio que personne ne veut manquer.",
+    bio: "Thomas, c'est la polyvalence incarnée : chroniqueur sur des sujets aussi variés qu'inattendus, grand comique avant tout et cerveau derrière les jeux cultes de l'émission. Son plus célèbre ? Trouve La Ref — un moment de radio que personne ne veut manquer.",
     initials: 'T',
   },
   {
@@ -123,7 +123,8 @@ export default function TeamCarousel() {
                         {member.initials}
                       </span>
                     </div>
-                    <span className="text-white/70 text-xs font-medium tracking-wider uppercase">Photo à venir</span>
+                    <span className="text-white/70 text-xs font-medium tracking-wider uppercase"> </span>
+                    { /* Photo à venir */}
                   </div>
                 </div>
 
