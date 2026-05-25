@@ -1,19 +1,19 @@
-# La REF — Radio Étudiante de France 
+# La REF - Radio Étudiante de France 
 
 Site web officiel de La REF, la radio étudiante de France. Construit avec Next.js 14 (App Router) et Tailwind CSS. Salut ! Reteste
 
 ## Fonctionnalités
 
-- **Page d'accueil** — Hero animé avec badge "On Air", section À propos, grille d'émissions, footer
-- **Lecteur audio** — Lecteur HTML5 personnalisé avec animation waveform, contrôles de lecture et volume
-- **Panel admin** (`/admin`) — Ajout / suppression d'émissions, upload de fichiers MP3
-- **API REST** — Routes Next.js pour la gestion des épisodes et l'authentification
-- **Responsive** — Mobile-first, adapté à tous les écrans
+- **Page d'accueil** - Hero animé avec badge "On Air", section À propos, grille d'émissions, footer
+- **Lecteur audio** - Lecteur HTML5 personnalisé avec animation waveform, contrôles de lecture et volume
+- **Panel admin** (`/admin`) - Ajout / suppression d'émissions, upload de fichiers MP3
+- **API REST** - Routes Next.js pour la gestion des épisodes et l'authentification
+- **Responsive** - Mobile-first, adapté à tous les écrans
 
 ## Stack
 
-- [Next.js 14](https://nextjs.org/) — App Router, Server Components
-- [Tailwind CSS](https://tailwindcss.com/) — Styles utilitaires
+- [Next.js 14](https://nextjs.org/) - App Router, Server Components
+- [Tailwind CSS](https://tailwindcss.com/) - Styles utilitaires
 - [TypeScript](https://www.typescriptlang.org/)
 - Persistance locale : `data/episodes.json` + fichiers audio dans `public/audio/`
 

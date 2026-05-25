@@ -23,7 +23,7 @@ export default function About() {
         </svg>
       ),
       title: 'Musique & Culture',
-      desc: 'De la pop à l\'électro, du jazz au hip-hop — une programmation musicale éclectique et sans frontières.',
+      desc: 'De la pop à l\'électro, du jazz au hip-hop - une programmation musicale éclectique et sans frontières.',
     },
     {
       icon: (
@@ -54,7 +54,7 @@ export default function About() {
             les étudiants
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl leading-relaxed">
-            La REF, c'est la Radio Étudiante de France — une station 100% portée par des étudiant·e·s
+            La REF, c'est la Radio Étudiante de France - une station 100% portée par des étudiant·e·s
             passionné·e·s. Depuis nos studios, on vous parle de musique, d'actu, de culture et de
             tout ce qui fait vibrer la vie étudiante.
           </p>
@@ -109,7 +109,7 @@ export default function About() {
               "Notre mission ? Donner une voix aux étudiant·e·s de France,
               créer du lien et faire rayonner la culture étudiante."
             </p>
-            <p className="text-white/70 mt-4 text-sm font-medium">— L'équipe La REF</p>
+            <p className="text-white/70 mt-4 text-sm font-medium">- L'équipe La REF</p>
           </div>
         </div>
       </div>

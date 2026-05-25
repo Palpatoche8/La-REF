@@ -3,11 +3,11 @@ import './globals.css'
 import AuthProvider from '@/components/AuthProvider'
 
 export const metadata: Metadata = {
-  title: 'La REF — Radio Étudiante de France',
+  title: 'La REF - Radio Étudiante de France',
   description: 'La Radio Étudiante de France. Musique, culture, actualités par et pour les étudiants.',
   keywords: ['radio', 'étudiante', 'France', 'musique', 'podcast', 'émissions'],
   openGraph: {
-    title: 'La REF — Radio Étudiante de France',
+    title: 'La REF - Radio Étudiante de France',
     description: 'La Radio Étudiante de France. Musique, culture, actualités par et pour les étudiants.',
     type: 'website',
   },

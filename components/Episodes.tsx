@@ -53,7 +53,7 @@ export default async function Episodes() {
             Nos émissions
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl">
-            Retrouvez toutes nos émissions en replay — écoute gratuite, sans inscription.
+            Retrouvez toutes nos émissions en replay - écoute gratuite, sans inscription.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default async function Episodes() {
               <SectionHeader
                 label="Rediffusions"
                 title="Émissions complètes"
-                desc="Les radios du mardi en version intégrale — rien ne coupe, rien ne manque."
+                desc="Les radios du mardi en version intégrale - rien ne coupe, rien ne manque."
               />
               {rediffs.length === 0 ? (
                 <EmptyState message="Aucune rediffusion pour l'instant." />
@@ -82,7 +82,7 @@ export default async function Episodes() {
               <SectionHeader
                 label="Podcasts"
                 title="Formats courts"
-                desc="Best-of, extraits et pépites sélectionnés pour vous — à écouter en quelques minutes."
+                desc="Best-of, extraits et pépites sélectionnés pour vous - à écouter en quelques minutes."
               />
               {podcasts.length === 0 ? (
                 <EmptyState message="Aucun podcast pour l'instant." />

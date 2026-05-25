@@ -185,7 +185,7 @@ export default function Hero() {
           Radio Étudiante de France
         </p>
         <p className="text-white/70 text-sm md:text-base mb-10 max-w-lg">
-          La voix des étudiants — musique, culture, débats, et bien plus encore.
+          La voix des étudiants - musique, culture, débats, et bien plus encore.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">

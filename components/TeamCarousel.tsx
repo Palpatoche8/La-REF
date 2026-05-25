@@ -12,25 +12,25 @@ const TEAM = [
   {
     name: 'Thomas',
     role: 'Chroniqueur & Maître des jeux',
-    bio: "Thomas, c'est la polyvalence incarnée : chroniqueur sur des sujets aussi variés qu'inattendus, grand comique avant tout et cerveau derrière les jeux cultes de l'émission. Son plus célèbre ? Trouve La Ref — un moment de radio que personne ne veut manquer.",
+    bio: "Thomas, c'est la polyvalence incarnée : chroniqueur sur des sujets aussi variés qu'inattendus, grand comique avant tout et cerveau derrière les jeux cultes de l'émission. Son plus célèbre ? Trouve La Ref - un moment de radio que personne ne veut manquer.",
     initials: 'T',
   },
   {
     name: 'Idrissa',
     role: 'Chroniqueur & Expert actualité',
-    bio: "Idrissa creuse là où les autres s'arrêtent. Ses chroniques sont le fruit de recherches approfondies, toujours sourcées, toujours utiles. Décryptage des arnaques, conseils pratiques, actu chaude — si vous voulez être vraiment à jour, c'est lui qu'il faut écouter.",
+    bio: "Idrissa creuse là où les autres s'arrêtent. Ses chroniques sont le fruit de recherches approfondies, toujours sourcées, toujours utiles. Décryptage des arnaques, conseils pratiques, actu chaude - si vous voulez être vraiment à jour, c'est lui qu'il faut écouter.",
     initials: 'I',
   },
   {
     name: 'Lenny',
     role: 'Spécialiste musical',
-    bio: "Lenny vit pour la musique. Des sorties de la semaine aux pépites oubliées, il navigue dans tous les genres avec une maîtrise qui force le respect. Son antenne est perpétuellement branchée sur les dernières actus musicales — et il partage chaque découverte avec vous.",
+    bio: "Lenny vit pour la musique. Des sorties de la semaine aux pépites oubliées, il navigue dans tous les genres avec une maîtrise qui force le respect. Son antenne est perpétuellement branchée sur les dernières actus musicales - et il partage chaque découverte avec vous.",
     initials: 'L',
   },
   {
     name: 'Jules',
     role: 'Chroniqueur & Moteur de l\'équipe',
-    bio: "Jules ne fait pas les choses à moitié. Sa bonne humeur est contagieuse, ses anecdotes sont folles et son énergie booste toute l'équipe. Chroniqueur endiablé, il s'assure que la dynamique de l'émission ne retombe jamais — et ça s'entend à chaque seconde.",
+    bio: "Jules ne fait pas les choses à moitié. Sa bonne humeur est contagieuse, ses anecdotes sont folles et son énergie booste toute l'équipe. Chroniqueur endiablé, il s'assure que la dynamique de l'émission ne retombe jamais - et ça s'entend à chaque seconde.",
     initials: 'Ju',
   },
 ]

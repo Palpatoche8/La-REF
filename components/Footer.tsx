@@ -23,7 +23,7 @@ export default function Footer() {
             <REFLogo variant="footer" color="white" />
 
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-              Radio Étudiante de France — la voix des étudiant·e·s, 24h/24, 7j/7.
+              Radio Étudiante de France - la voix des étudiant·e·s, 24h/24, 7j/7.
             </p>
 
             <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8">
           <p className="text-white/30 text-sm">
-            © {year} La REF — Radio Étudiante de France. Tous droits réservés.
+            © {year} La REF - Radio Étudiante de France. Tous droits réservés.
           </p>
           <p className="text-white/20 text-xs">
             Fait avec passion par des étudiants

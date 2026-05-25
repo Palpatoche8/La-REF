@@ -319,7 +319,7 @@ export default function AdminPage() {
                   <span className="text-sm text-gray-500">{session.user.name}</span>
                 </div>
               )}
-              <h1 className="text-2xl font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>La REF — Admin</h1>
+              <h1 className="text-2xl font-black text-[#1A1A1A]" style={{ fontFamily: 'Syne, sans-serif' }}>La REF - Admin</h1>
               <p className="text-gray-400 text-sm mt-1">Entrez le mot de passe administrateur</p>
             </div>
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
