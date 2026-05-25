@@ -2,6 +2,7 @@ import Hero from '@/components/Hero'
 import About from '@/components/About'
 import TeamCarousel from '@/components/TeamCarousel'
 import Episodes from '@/components/Episodes'
+import QuestionsSection from '@/components/QuestionsSection'
 import Footer from '@/components/Footer'
 
 export const revalidate = 0;
@@ -13,6 +14,7 @@ export default function Home() {
       <About />
       <TeamCarousel />
       <Episodes />
+      <QuestionsSection />
       <Footer />
     </main>
   )
